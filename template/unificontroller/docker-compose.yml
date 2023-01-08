@@ -2,10 +2,10 @@ version: "3.3"
 services:
     unifi-controller:
         deploy:
-        resources:
-            limits:
-                cpus: 0.50
-                memory: 300M
+            resources:
+                limits:
+                    cpus: 0.50
+                    memory: 300M
         image: linuxserver/unifi-controller:7.2.95
         container_name: unifi-controller
         restart: unless-stopped

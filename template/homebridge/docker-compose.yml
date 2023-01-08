@@ -2,10 +2,10 @@ version: '3.3'
 services:
     homebridge:
         deploy:
-        resources:
-            limits:
-                cpus: 0.50
-                memory: 300M
+            resources:
+                limits:
+                    cpus: 0.50
+                    memory: 300M
         container_name: homebridge
         tty: true
         volumes:
@@ -19,10 +19,10 @@ services:
 
     deconz:
         deploy:
-        resources:
-            limits:
-                cpus: 0.50
-                memory: 300M
+            resources:
+                limits:
+                    cpus: 0.50
+                    memory: 300M
         image: deconzcommunity/deconz
         container_name: deconz
         restart: always
