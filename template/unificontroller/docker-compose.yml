@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+    unifi-controller:
+        deploy:
+        resources:
+            limits:
+                cpus: 0.50
+                memory: 300M
+        image: linuxserver/unifi-controller:7.2.95
+        container_name: unifi-controller
+        restart: unless-stopped
+        tty: true
+        environment:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+            MEM_LIMIT: 250
+            MEM_STARTUP: 250
+        volumes:
+            - /share/Container/volumes/unifi-controller:/config
+        ports:
+            - 8443:8443
+            - 8843:8843
+            - 10001:10001/udp
+            - 8080:8080
+            - 8880:8880
+            - 1900:1900/udp

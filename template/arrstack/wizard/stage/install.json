@@ -1,0 +1,47 @@
+{
+    "api_version": "v1",
+    "title": "Arr stack",
+    "wizard": [
+      {
+        "title": "Configuration",
+        "schema": {
+          "username": {
+            "type": "string",
+            "title": "VPN username",
+            "description": "iVPN account ID or username",
+            "required": true
+          },
+          "password": {
+            "type": "string",
+            "title": "VPN Password",
+            "description": "if using account ID can be whatever you want",
+            "required": true
+          },
+          "secret": {
+            "type": "string",
+            "title": "Aria gRPC Secret",
+            "description": "Aria2 gRPC secret",
+            "required": true
+          }
+        },
+        "form": [
+          "*"
+        ]
+      }
+    ],
+    "binding": {
+      "type": "yaml",
+      "file": "docker-compose.yml",
+      "data": {
+        "username": [
+          "services.gluetun.environment.OPENVPN_USER"
+        ],
+        "password": [
+          "services.gluetun.environment.OPENVPN_PASSWORD"
+        ],
+        "secret": [
+          "services.aria2.environment.RPC_SECRET"
+        ]
+      }
+    }
+  }

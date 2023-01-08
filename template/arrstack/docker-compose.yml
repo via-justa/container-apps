@@ -1,0 +1,208 @@
+version: "3.3"
+services:
+    gluetun:
+        image: qmcgaw/gluetun:v3
+        container_name: gluetun
+        # line above must be uncommented to allow external containers to connect. See https://github.com/qdm12/gluetun/wiki/Connect-a-container-to-gluetun#external-container-to-gluetun
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun:/dev/net/tun
+        ports:
+            - 8888:8888/tcp # HTTP proxy
+            - 8388:8388/tcp # Shadowsocks
+            - 8388:8388/udp # Shadowsocks
+            - 8190:8190     # QBT UI Port
+            - 44020:44020     # Bittorrent port
+            - 44020:44020/udp # Bittorrent port
+            - 8192:8080     # Web port
+            - 9117:9117
+            - 8193:8989     # Sonarr port
+            - 8194:7878     # Radarr port
+            # - 8686:8686   # Lidarr port
+            - 8195:9696     # Prowlarr port
+            - 8191:8181/tcp # get player port
+            - 8196:80       # speed test port
+            - 8197:6500     # rdtclient
+            - 8198:8080     # aria2
+            - 6800:6800     # aria2 RPC
+        volumes:
+            - /share/Container/volumes/arrstack/gluetun:/gluetun
+        environment:
+            OPENVPN_USER: 
+            OPENVPN_PASSWORD: 
+            VPN_SERVICE_PROVIDER: ivpn
+            VPN_TYPE: openvpn
+            SERVER_CITIES: Frankfurt
+            TZ: Europe/Berlin
+            FIREWALL_OUTBOUND_SUBNETS: 192.168.0.0/24
+
+    # qbittorrent:
+    #     image: linuxserver/qbittorrent:4.5.0
+    #     container_name: qbittorrent
+    #     deploy:
+    #         resources:
+    #             limits:
+    #                 cpus: "0.5"
+    #                 memory: "300M"
+    #     environment:
+    #         PUID: 1000
+    #         PGID: 100
+    #         TZ: Europe/Berlin
+    #         UMASK_SET: 022
+    #         WEBUI_PORT: 8190
+    #     volumes:
+    #         - /share/Container/volumes/arrstack/qbt/config:/config
+    #         # Download settings in qBittorent:
+    #         #   Default save path: /data/downloads/qbittorrent/seeding
+    #         #   radarr path /data/downloads/qbittorrent/Films
+    #         #   sonnar path /data/downloads/qbittorrent/TV
+    #         - /share/Data/downloads/qbittorrent:/data/downloads/qbittorrent
+    #     network_mode: service:gluetun
+    #     restart: unless-stopped
+    #     # healthcheck:
+    #     #     test: ping 1.1.1.1 -nqc 1 > /dev/null 2>&1 || exit 1
+    #     #     interval: 60s
+    #     #     retries: 5
+    #     #     start_period: 20s
+    #     #     timeout: 10s
+
+    rdtclient:
+        image: rogerfar/rdtclient:2.0.19
+        container_name: rdtclient
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "300M"
+        environment:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+        volumes:
+            - /share/Container/volumes/arrstack/rdtclient/config:/config
+            - /share/Container/volumes/arrstack/rdtclient/db:/data/db
+            # set on settings > client > download path to /data/downloads/rdtclient
+            - /share/Data/downloads/rdtclient:/data/downloads/rdtclient
+        network_mode: service:gluetun
+        restart: unless-stopped
+
+    aria2:
+        image: hurlenko/aria2-ariang:1.3.2
+        container_name: aria2
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "300M"
+        environment:
+            RPC_SECRET: 
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+            EMBED_RPC_SECRET: true
+            ARIA2RPCPORT: 6800
+        volumes:
+            - /share/Container/volumes/arrstack/aria2/config:/aria2/conf
+            - /share/Data/downloads/rdtclient:/data/downloads/rdtclient
+        network_mode: service:gluetun
+        restart: unless-stopped
+
+    # *arr
+    prowlarr:
+        image: linuxserver/prowlarr:latest
+        container_name: prowlarr
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "300M"
+        environment:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+        volumes:
+            - /share/Container/volumes/arrstack/prowlarr:/config
+        restart: unless-stopped
+        network_mode: service:gluetun
+
+    sonarr:
+        image: linuxserver/sonarr:latest
+        container_name: sonarr
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "300M"
+        environment:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /share/Container/volumes/arrstack/sonarr/config:/config
+            - /share/Data:/data
+        restart: unless-stopped
+        network_mode: service:gluetun
+
+    radarr:
+        image: linuxserver/radarr:latest
+        container_name: radarr
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "300M"
+        environment:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /share/Container/volumes/arrstack/radarr3/config:/config
+            - /share/Data:/data
+        restart: unless-stopped
+        network_mode: service:gluetun
+
+    notifiarr:
+        image: golift/notifiarr
+        container_name: notifiarr
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: "300M"
+        environment:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin
+        volumes:
+            - /share/Container/volumes/arrstack/notifiarr:/config
+            - /var/run/utmp:/var/run/utmp
+            - /etc/machine-id:/etc/machine-id
+        restart: unless-stopped
+        network_mode: host
+            
+    # misc
+    # speedtest:
+    #     container_name: speedtest-vpn
+    #     image: henrywhitaker3/speedtest-tracker
+    #     deploy:
+    #         resources:
+    #             limits:
+    #                 cpus: "0.5"
+    #                 memory: "300M"
+    #     volumes:
+    #       - /share/Container/volumes/arrstack/speedtest-config:/config
+    #     environment:
+    #       TZ: Europe/Athens
+    #       PUID: 1000
+    #       PGID: 100
+    #       OOKLA_EULA_GDPR: true
+    #     logging:
+    #       driver: "json-file"
+    #       options:
+    #         max-file: "10"
+    #         max-size: "200k"
+    #     network_mode: service:gluetun
+    #     restart: unless-stopped

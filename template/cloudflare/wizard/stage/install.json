@@ -1,0 +1,29 @@
+{
+  "api_version": "v1",
+  "title": "CloudFlare Access tunnel",
+  "wizard": [
+    {
+      "title": "Tunnel Configuration",
+      "schema": {
+        "token": {
+          "type": "string",
+          "title": "token",
+          "description": "access token",
+          "required": true
+        }
+      },
+      "form": [
+        "*"
+      ]
+    }
+  ],
+  "binding": {
+    "type": "yaml",
+    "file": "docker-compose.yml",
+    "data": {
+      "token": [
+        "services.cloudflare.environment.TUNNEL_TOKEN"
+      ]
+    }
+  }
+}

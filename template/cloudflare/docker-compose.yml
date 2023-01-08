@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+    cloudflare:
+        image: cloudflare/cloudflared:latest
+        container_name: cloudflare
+        network_mode: host
+        command: tunnel run
+        volumes:
+            - /share/Container/volumes/cloudflare:/cloudflared
+        environment:
+            TUNNEL_TOKEN:
+            PUID: 1000
+            PGID: 100
+            TZ: Europe/Berlin

@@ -1,0 +1,46 @@
+[
+    {
+        "description": "Arr Stack",
+        "repository": "dockerhub",
+        "arch": "amd64",
+        "icon": "https://raw.githubusercontent.com/via-justa/container-apps/main/images/app_arrstack.png",
+        "displayName": "*arr stack with VPN and downloader",
+        "name": "arrstack",
+        "version": "latest",
+        "location": "https://hub.docker.com/r/linuxserver/radarr",
+        "type": "app"
+    },
+    {
+        "description": "CloudFlare Access",
+        "repository": "dockerhub",
+        "arch": "amd64",
+        "icon": "https://raw.githubusercontent.com/via-justa/container-apps/main/images/app_cloudflared.png",
+        "displayName": "CloudFlare Access Daemon",
+        "name": "cloudflare",
+        "version": "latest",
+        "location": "https://hub.docker.com/r/cloudflare/cloudflared",
+        "type": "app"
+    },
+    {
+        "description": "UniFi Controller software",
+        "repository": "dockerhub",
+        "arch": "amd64",
+        "icon": "https://raw.githubusercontent.com/via-justa/container-apps/main/images/app_unifi.png",
+        "displayName": "UniFi Controller",
+        "name": "unificontroller",
+        "version": "7.2.95",
+        "location": "https://hub.docker.com/r/linuxserver/unifi-controller",
+        "type": "app"
+    },
+    {
+        "description": "Homebridge allows you to integrate with smart home devices that do not natively support HomeKit",
+        "repository": "dockerhub",
+        "arch": "amd64",
+        "icon": "https://raw.githubusercontent.com/via-justa/container-apps/main/images/app_homebridge.png",
+        "displayName": "Homebridge",
+        "name": "homebridge",
+        "version": "latest",
+        "location": "https://hub.docker.com/r/oznu/homebridge",
+        "type": "app"
+    }
+]

@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+    homebridge:
+        deploy:
+        resources:
+            limits:
+                cpus: 0.50
+                memory: 300M
+        container_name: homebridge
+        tty: true
+        volumes:
+            - '/share/Container/volumes/homebridge:/homebridge'
+        environment:
+            PUID: 1000
+            PGID: 100
+        image: oznu/homebridge
+        restart: always
+        network_mode: host
+
+    deconz:
+        deploy:
+        resources:
+            limits:
+                cpus: 0.50
+                memory: 300M
+        image: deconzcommunity/deconz
+        container_name: deconz
+        restart: always
+        privileged: true
+        tty: true
+        ports: 
+            - 9090:9090
+            - 9091:9091
+        volumes:
+            - /share/Container/volumes/deconz:/opt/deCONZ
+        devices:
+            - /dev/ttyACM0
+        environment:
+            DECONZ_WEB_PORT: 9090
+            DECONZ_WS_PORT: 9091
+            DECONZ_UPNP: 0
+            TZ: Europe/Berlin
+            DECONZ_DEVICE: /dev/ttyACM0
+            DEBUG_INFO: 1
+            DECONZ_VNC_MODE: 0
